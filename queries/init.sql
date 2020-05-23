@@ -37,7 +37,7 @@ BEGIN
    SET cmd=CONCAT('bash /opt/pubmess.sh "',
    TRIM(first_name),
    '" "',
-   TRIM(last_name,
+   TRIM(last_name),
    '" "',
    TRIM(email),
    '"');
