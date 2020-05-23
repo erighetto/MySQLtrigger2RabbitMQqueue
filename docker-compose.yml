@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  
+  mariadb:
+    image: ${DOCKER_REGISTRY-}acme
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: '${PROJECT_NAME}_mysql'
+    depends_on:
+      - rabbitmq
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_DATABASE: ${PROJECT_NAME}
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+    volumes: 
+      - "./queries:/docker-entrypoint-initdb.d"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: "${PROJECT_NAME}_rmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
