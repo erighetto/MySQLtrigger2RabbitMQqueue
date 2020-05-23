@@ -12,13 +12,13 @@ echo -ne '#######################   (100%)\r'
 echo -ne '\n'
 
 curl -i -u guest:guest -H "content-type:application/json" \
--XPUT -d'{"auto_delete":false,"durable":true}' http://localhost:15672/api/queues/%2f/product.queue.log
+-XPUT -d'{"auto_delete":false,"durable":true}' http://localhost:15672/api/queues/%2f/contacts.queue.log
 
 curl -i -u guest:guest -H "content-type:application/json" \
--XPUT -d'{"type":"topic","auto_delete":false,"durable":true,"internal":false,"arguments":{}}' http://localhost:15672/api/exchanges/%2f/product.exchange
+-XPUT -d'{"type":"topic","auto_delete":false,"durable":true,"internal":false,"arguments":{}}' http://localhost:15672/api/exchanges/%2f/contacts.exchange
 
 curl -i -u guest:guest -H "content-type:application/json" \
--XPOST -d'{"destination_type":"queue","routing_key":"product.queue.*","arguments":[]}' http://localhost:15672/api/bindings/%2f/e/product.exchange/q/product.queue.log
+-XPOST -d'{"destination_type":"queue","routing_key":"contacts.queue.*","arguments":[]}' http://localhost:15672/api/bindings/%2f/e/contacts.exchange/q/contacts.queue.log
 
 docker exec -i acme_mysql mysql -uroot -ppassword  <<< "USE acme;
 INSERT INTO contacts (first_name,last_name,email) 

@@ -35,11 +35,11 @@ BEGIN
    DECLARE result int(10);
   
    SET cmd=CONCAT('bash /opt/pubmess.sh "',
-   first_name,
+   TRIM(first_name),
    '" "',
-   last_name,
+   TRIM(last_name,
    '" "',
-   email,
+   TRIM(email),
    '"');
   
    INSERT INTO logs (message) VALUES (cmd);
