@@ -17,7 +17,7 @@ CREATE TABLE `contacts` (
 --
 DROP TABLE IF EXISTS `logs`;
 CREATE TABLE `logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` VARCHAR(72) NOT NULL,
   `message` text NOT NULL,
   `routing` text NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -30,15 +30,13 @@ CREATE TABLE `logs` (
 DROP PROCEDURE IF EXISTS acme.publish_message;
 DELIMITER $$
 $$
-CREATE DEFINER=`root`@`%` PROCEDURE `acme`.`publish_message`( IN routing VARCHAR(255), IN id int, IN first_name VARCHAR(255), IN last_name  VARCHAR(255), IN email VARCHAR(255))
+CREATE DEFINER=`root`@`%` PROCEDURE `acme`.`publish_message`( IN routing VARCHAR(255), IN contact_id int, IN first_name VARCHAR(255), IN last_name  VARCHAR(255), IN email VARCHAR(255))
 BEGIN
    SET @AMQP_URL = 'amqp://guest:guest@rabbitmq:5672';
    SET @AMQP_EXCHANGE = 'contacts.exchange';
-   SET @MESSAGE = json_object('id', id, 'first_name', first_name, 'last_name', last_name, 'email', email);
-  
-   INSERT INTO logs (message, routing) VALUES (@MESSAGE, routing);
-   
-   SET @message_id = (SELECT lib_mysqludf_amqp_sendjson(@AMQP_URL, @AMQP_EXCHANGE, routing, @MESSAGE));
+   SET @MESSAGE = json_object('id', contact_id, 'first_name', first_name, 'last_name', last_name, 'email', email);
+   SET @MESSAGE_ID = (SELECT lib_mysqludf_amqp_sendjson(@AMQP_URL, @AMQP_EXCHANGE, routing, @MESSAGE));
+   INSERT INTO logs (id, message, routing) VALUES (@MESSAGE_ID, @MESSAGE, routing);
 END$$
 DELIMITER ;
 
