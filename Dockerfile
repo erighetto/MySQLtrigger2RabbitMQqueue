@@ -1,23 +1,21 @@
 FROM mariadb
 
 RUN apt-get update && apt-get install -y \
-    curl \
-    build-essential \
-    default-libmysqlclient-dev \
-    wget \
-    cmake \
-    pkg-config \
-    libbsd-dev \
-    file \
     autoconf \
+    build-essential \
+    cmake \
+    default-libmysqlclient-dev \
+    file \
+    libbsd-dev \
     libtool \
     nano \
+    pkg-config \
+    wget \
     zip
 
 RUN cd /tmp; \
     wget https://github.com/alanxz/rabbitmq-c/archive/v0.10.0.zip; \
-    unzip v0.10.0.zip; \
-    ls
+    unzip v0.10.0.zip
 
 RUN cd /tmp/rabbitmq-c-0.10.0; \
     mkdir build && cd build; \
@@ -26,8 +24,7 @@ RUN cd /tmp/rabbitmq-c-0.10.0; \
 
 RUN cd /tmp; \
     wget https://github.com/ssimicro/lib_mysqludf_amqp/archive/master.zip; \
-    unzip master.zip; \
-    ls
+    unzip master.zip
 
 RUN cd /tmp/lib_mysqludf_amqp-master; \
     bash autogen; \

@@ -25,7 +25,7 @@ CREATE TABLE `logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Procedure structure for table `publish_message`
+-- Procedure structure for `publish_message`
 --
 DROP PROCEDURE IF EXISTS acme.publish_message;
 DELIMITER $$
