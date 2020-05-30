@@ -5,9 +5,7 @@ Yes you can.
 
 With some Hackish Pranks & Tricks by the way.  
 
-cfr: https://github.com/mysqludf/lib_mysqludf_sys  
-
-Under the hood MySQL trigger a bash script that via curl publish a message calling RabbitMQ api  
+cfr: https://github.com/ssimicro/lib_mysqludf_amqp  
 
 See in action running:  
     bash run.sh  

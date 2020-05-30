@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+docker-compose down -v
+
 docker-compose build
 
 docker-compose up -d
@@ -36,3 +38,13 @@ VALUES ('Carine ','Schmitt','carine.schmitt@verizon.net'),
 ('Jean','King','jean.king@me.com'),
 ('Susan','Nelson','susan.nelson@comcast.net'), 
 ('Roland','Keitel','roland.keitel@yahoo.com');"
+
+docker exec -i acme_mysql mysql -uroot -ppassword  <<< "USE acme;
+UPDATE contacts SET last_name = 'Mac Bergulfsen' where email = 'jonas.bergulfsen@mac.com';"
+
+docker exec -i acme_mysql mysql -uroot -ppassword  <<< "USE acme;
+DELETE t1 FROM contacts t1
+INNER JOIN contacts t2 
+WHERE 
+    t1.id < t2.id AND 
+    t1.email = t2.email;"
