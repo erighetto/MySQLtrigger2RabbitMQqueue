@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS `logs`;
 CREATE TABLE `logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` text NOT NULL,
-  `route` text NOT NULL,
+  `routing` text NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -36,7 +36,7 @@ BEGIN
    SET @AMQP_EXCHANGE = 'contacts.exchange';
    SET @MESSAGE = json_object('id', id, 'first_name', first_name, 'last_name', last_name, 'email', email);
   
-   INSERT INTO logs (message) VALUES (@MESSAGE);
+   INSERT INTO logs (message, routing) VALUES (@MESSAGE, routing);
    
    SET @message_id = (SELECT lib_mysqludf_amqp_sendjson(@AMQP_URL, @AMQP_EXCHANGE, routing, @MESSAGE));
 END$$
@@ -50,7 +50,7 @@ DELIMITER $$
 $$
 CREATE DEFINER=`root`@`%` TRIGGER pubmess_oninsert_trigger  
 AFTER INSERT ON contacts 
-FOR EACH ROW CALL publish_message('contacts.insert', NEW.id, NEW.first_name, NEW.last_name, NEW.email)$$
+FOR EACH ROW CALL publish_message('contacts.queue.insert', NEW.id, NEW.first_name, NEW.last_name, NEW.email)$$
 DELIMITER ;
 
 --
@@ -61,7 +61,7 @@ DELIMITER $$
 $$
 CREATE DEFINER=`root`@`%` TRIGGER pubmess_onupdate_trigger  
 AFTER UPDATE ON contacts 
-FOR EACH ROW CALL publish_message('contacts.update', NEW.id, NEW.first_name, NEW.last_name, NEW.email)$$
+FOR EACH ROW CALL publish_message('contacts.queue.update', NEW.id, NEW.first_name, NEW.last_name, NEW.email)$$
 DELIMITER ;
 
 --
@@ -72,7 +72,7 @@ DELIMITER $$
 $$
 CREATE DEFINER=`root`@`%` TRIGGER `pubmess_ondelete_trigger` 
 AFTER DELETE ON contacts 
-FOR EACH ROW CALL publish_message('contacts.delete', OLD.id, OLD.first_name, OLD.last_name, OLD.email)$$
+FOR EACH ROW CALL publish_message('contacts.queue.delete', OLD.id, OLD.first_name, OLD.last_name, OLD.email)$$
 DELIMITER ;
 
 --
